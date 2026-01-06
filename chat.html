@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple JS Chatbot</title>
+    <style>
+        /* CSS - The Design */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        
+        #chat-container { width: 400px; height: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        
+        #header { background: linear-gradient(15deg, #1a2367, #4ca77e 100px); color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 1.2rem; }
+        
+        #chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { padding: 10px 15px; border-radius: 18px; max-width: 75%; font-size: 0.95rem; line-height: 1.4; }
+        
+        .bot-message { background: #e4e6eb; color: black; align-self: flex-start; border-bottom-left-radius: 2px; }
+        
+        .user-message { background: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        #input-area { display: flex; padding: 15px; border-top: 1px solid #eee; background: white; }
+        
+        #user-input { flex-grow: 1; border: 1px solid #ddd; border-radius: 20px; padding: 10px 15px; outline: none; transition: border 0.3s; }
+        #user-input:focus { border-color: #0084ff; }
+        
+        #send-btn { background: #0084ff; color: white; border: none; margin-left: 10px; padding: 0 15px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
+        #send-btn:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="header">Support Assistant</div>
+    <div id="chat-window">
+        <div class="message bot-message">Hello! Type "help" to see what I can do.</div>
+    </div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+        <button id="send-btn">➤</button>
+    </div>
+</div>
+
+<script>
+    /* JavaScript - The Logic */
+    const sendBtn = document.getElementById('send-btn');
+    const userInput = document.getElementById('user-input');
+    const chatWindow = document.getElementById('chat-window');
+
+    function addMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender + '-message');
+        msgDiv.innerText = text;
+        chatWindow.appendChild(msgDiv);
+        
+        // Scroll to the bottom
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function getBotResponse(input) {
+        const text = input.toLowerCase();
+        
+        // Logic Rules
+        if (text.includes("hello") || text.includes("hi")) return "Hi there! How can I help you today?";
+        if (text.includes("help")) return "I can answer questions about: 'pricing', 'hours', or 'contact'.";
+        if (text.includes("price") || text.includes("cost")) return "Our basic plan starts at $19/month.";
+        if (text.includes("hour")) return "We are open Monday-Friday, 9am to 6pm.";
+        if (text.includes("contact")) return "You can email us at support@example.com.";
+        if (text.includes("bye")) return "Goodbye! Have a great day!";
+        
+        return "I'm sorry, I don't understand that yet. Try asking for 'help'.";
+    }
+
+    function handleSend() {
+        const message = userInput.value.trim();
+        if (message === "") return;
+
+        // User Message
+        addMessage(message, 'user');
+        userInput.value = '';
+
+        // Bot Response (with a small delay to simulate thinking)
+        setTimeout(() => {
+            const response = getBotResponse(message);
+            addMessage(response, 'bot');
+        }, 600);
+    }
+
+    // Click button to send
+    sendBtn.addEventListener('click', handleSend);
+
+    // Press "Enter" key to send
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+</script>
+
+</body>
+</html>
